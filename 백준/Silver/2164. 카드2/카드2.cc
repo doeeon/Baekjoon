@@ -1,5 +1,5 @@
 #include <iostream>
-#include <deque>
+#include <queue>
 
 using namespace std;
 
@@ -8,19 +8,19 @@ int main() {
 	cin >> n;
 
 	int answer = 0;
-	deque<int> dq;
+	queue<int> q;
 
 	for (int i = 1; i <= n; i++)
-		dq.push_back(i);
+		q.push(i);
 
-	while (dq.size() > 1)
+	while (q.size() > 1)
 	{
-		dq.pop_front();
-		dq.push_back(dq.front());
-		dq.pop_front();
+		q.pop();
+		q.push(q.front());
+		q.pop();
 	}
 
-	cout << dq.front();
+	cout << q.front();
 
 	return 0;
 }
