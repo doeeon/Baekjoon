@@ -1,5 +1,5 @@
 #include <iostream>
-#include <set>
+#include <queue>
 
 using namespace std;
 
@@ -10,20 +10,20 @@ int main() {
 	int n;
 	cin >> n;
 
-	multiset<int> ms;
+	priority_queue<int, vector<int>, greater<int>> pq;
 	int num;
 	for (int i = 0; i < n; i++)
 	{
 		cin >> num;
 		if (num > 0)
-			ms.insert(num);
+			pq.push(num);
 		else
 		{
-			if (ms.empty())
+			if (pq.empty())
 				cout << '0' << '\n';
 			else {
-				cout << *ms.begin() << '\n';
-				ms.erase(ms.begin());
+				cout << pq.top() << '\n';
+				pq.pop();
 			}
 		}
 	}
