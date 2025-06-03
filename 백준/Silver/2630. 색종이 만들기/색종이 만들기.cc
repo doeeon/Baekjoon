@@ -23,17 +23,13 @@ void Count(int& blue, int& white, int n, vector<vector<int>>& map)
 
 		else
 		{
-			vector<vector<int>> v(n/2, vector<int>(n/2, 0));
-			for (int x = 0; x < (n / 2); x++)
-				for (int y = 0; y < (n / 2); y++)
-					v[y][x] = map[dy[i] + y][dx[i] + x];
-
+			vector<vector<int>> v;
+			for (int y = dy[i]; y < dy[i] + (n / 2); y++)
+				v.emplace_back(map[y].begin() + dx[i], map[y].begin() + dx[i] + (n / 2));
+			
 			Count(blue, white, n / 2, v);
 		}
 	}
-
-
-	return;
 }
 
 int main() {
