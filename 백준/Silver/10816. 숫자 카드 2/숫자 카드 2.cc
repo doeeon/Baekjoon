@@ -1,5 +1,5 @@
 #include <iostream>
-#include <unordered_map>
+#include <vector>
 
 using namespace std;
 
@@ -11,11 +11,11 @@ int main() {
 	cin >> N;
 
 	int n;
-	unordered_map<int, int> mp;
+	vector<int> v(20000001, 0);
 	for (int i = 0; i < N; i++)
 	{
 		cin >> n;
-		mp[n]++;
+		v[n+10000000]++;
 	}
 
 	cin >> M;
@@ -23,7 +23,7 @@ int main() {
 	for (int i = 0; i < M; i++)
 	{
 		cin >> m;
-		cout << mp[m] << ' ';
+		cout << v[m+10000000] << ' ';
 	}
 	return 0;
 }
