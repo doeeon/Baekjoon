@@ -2,9 +2,10 @@
 #include <vector>
 #include <queue>
 #include <stack>
+#include <algorithm>
 
 using namespace std;
-void DFS(int V, vector<vector<bool>> nodes, vector<bool> visited)
+void DFS(int V, vector<vector<int>> nodes, vector<bool> visited)
 {
 	stack<int> st;
 	st.push(V);
@@ -20,15 +21,15 @@ void DFS(int V, vector<vector<bool>> nodes, vector<bool> visited)
 		visited[cur] = true;
 
 		cout << cur << ' ';
-		for (int i = nodes[cur].size()-1; i >= 1; i--)
-			if (nodes[cur][i] && !visited[i])
-				st.push(i);
+		for (int i = nodes[cur].size()-1; i >= 0; i--)
+			if (!visited[nodes[cur][i]])
+				st.push(nodes[cur][i]);
 	}
 
 	return;
 }
 
-void BFS(int V, vector<vector<bool>> nodes, vector<bool> visited)
+void BFS(int V, vector<vector<int>> nodes, vector<bool> visited)
 {
 	queue<int> q;
 	q.push(V);
@@ -37,11 +38,11 @@ void BFS(int V, vector<vector<bool>> nodes, vector<bool> visited)
 	while (!q.empty())
 	{
 		cout << q.front() << ' ';
-		for (int i = 1; i < nodes[q.front()].size(); i++)
-			if (nodes[q.front()][i] && !visited[i])
+		for (int i = 0; i < nodes[q.front()].size(); i++)
+			if (!visited[nodes[q.front()][i]])
 			{
-				q.push(i);
-				visited[i] = true;
+				q.push(nodes[q.front()][i]);
+				visited[nodes[q.front()][i]] = true;
 			}
 
 		q.pop();
@@ -55,13 +56,16 @@ int main() {
 	cin >> N >> M >> V;
 
 	int a, b;
-	vector<vector<bool>> nodes(N+1, vector<bool>(N+1, 0));
+	vector<vector<int>> nodes(N+1);
 	for (int i = 0; i < M; i++)
 	{
 		cin >> a >> b;
-		nodes[a][b] = true;
-		nodes[b][a] = true;
+		nodes[a].push_back(b);
+		nodes[b].push_back(a);
 	}
+
+	for (int i = 1; i < N + 1; i++)
+		sort(nodes[i].begin(), nodes[i].end());
 
 	vector<bool> visited(N+1, false);
 	DFS(V, nodes, visited);
