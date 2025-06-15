@@ -23,12 +23,9 @@ int main() {
 	sort(sorted_v.begin(), sorted_v.end());
 	sorted_v.erase(unique(sorted_v.begin(), sorted_v.end()), sorted_v.end());
 
-	unordered_map<int, int> m;
-	for (int i = 0; i < sorted_v.size(); i++)
-		m[sorted_v[i]] = i;
 
 	for (int i = 0; i < N; i++)
-		cout << m[v[i]] << ' ';
+		cout << lower_bound(sorted_v.begin(), sorted_v.end(), v[i]) - sorted_v.begin() << ' ';
 
 	return 0;
 }
