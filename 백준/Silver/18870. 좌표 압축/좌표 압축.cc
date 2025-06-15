@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <map>
+#include <unordered_map>
 
 using namespace std;
 
@@ -23,7 +23,7 @@ int main() {
 	sort(sorted_v.begin(), sorted_v.end());
 	sorted_v.erase(unique(sorted_v.begin(), sorted_v.end()), sorted_v.end());
 
-	map<int, int> m;
+	unordered_map<int, int> m;
 	for (int i = 0; i < sorted_v.size(); i++)
 		m[sorted_v[i]] = i;
 
