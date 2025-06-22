@@ -3,59 +3,44 @@
 
 using namespace std;
 
-void Count(int& blue, int& white, int n, vector<vector<int>>& map)
+int white = 0;
+int blue = 0;
+void Cut(int y, int x, int N, vector<vector<int>>& map)
 {
-	// 4등분 -> 각각 탐색(안되면 재귀, 되면 cnt++)
-	int dy[4] = { 0, 0, n / 2, n / 2 };
-	int dx[4] = { 0, n / 2, 0, n / 2 };
-	for (int i = 0; i < 4; i++)
+	int sum = 0;
+	for (int i = y; i < y+N; i++)
+		for (int j = x; j < x + N; j++)
+			sum += map[i][j];
+
+	if (sum == N * N)
+		blue++;
+	else if (sum == 0)
+		white++;
+	else
 	{
-		int sum = 0;
-		for (int x = dx[i]; x < dx[i] + (n / 2); x++)
-			for (int y = dy[i]; y < dy[i] + (n / 2); y++)
-				sum += map[y][x];
-
-		if (sum == 0)
-			white++;
-			
-		else if (sum == n * n / 4)
-			blue++;
-
-		else
-		{
-			vector<vector<int>> v;
-			for (int y = dy[i]; y < dy[i] + (n / 2); y++)
-				v.emplace_back(map[y].begin() + dx[i], map[y].begin() + dx[i] + (n / 2));
-			
-			Count(blue, white, n / 2, v);
-		}
+		Cut(y, x, N / 2, map);
+		Cut(y, x + N / 2, N / 2, map);
+		Cut(y + N / 2, x, N / 2, map);
+		Cut(y + N / 2, x + N / 2, N / 2, map);
 	}
 }
 
 int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
 	int N;
 	cin >> N;
 
+	int n;
 	vector<vector<int>> map(N, vector<int>(N, 0));
-	int tmp;
-	int sum = 0;
 	for (int i = 0; i < N; i++)
 		for (int j = 0; j < N; j++)
 		{
-			cin >> tmp;
-			map[i][j] = tmp;
-			sum += tmp;
+			cin >> n;
+			map[i][j] = n;
 		}
 
-	int blue = 0;
-	int white = 0;
-	
-	if (sum == 0)
-		white = 1;
-	else if (sum == N * N)
-		blue = 1;
-	else
-		Count(blue, white, N, map);
+	Cut(0, 0, N, map);
 
 	cout << white << '\n' << blue;
 
