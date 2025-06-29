@@ -32,11 +32,11 @@ int main() {
 
 		for (int i = 2; i < N; i++)
 		{
-			dp[0][i] = max(dp[1][i - 1], max(dp[0][i - 2], dp[1][i - 2])) + arr[0][i];
-			dp[1][i] = max(dp[0][i - 1], max(dp[0][i - 2], dp[1][i - 2])) + arr[1][i];
+			dp[0][i] = max(dp[1][i - 1], dp[1][i - 2]) + arr[0][i];
+			dp[1][i] = max(dp[0][i - 1], dp[0][i - 2]) + arr[1][i];
 		}
 		
-		cout << max(*max_element(dp[0].begin(), dp[0].end()), *max_element(dp[1].begin(), dp[1].end())) << '\n';
+		cout << max(dp[0][N-1], dp[1][N-1]) << '\n';
 	}
 
 	return 0;
