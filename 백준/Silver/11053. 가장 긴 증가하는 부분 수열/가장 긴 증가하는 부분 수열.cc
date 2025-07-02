@@ -9,19 +9,18 @@ int main() {
 	int N;
 	cin >> N;
 
-	int num;
-	vector<int> input(N, 0);
+	vector<int> num(N, 0);
+	vector<int> dp(N, 1);
+	
+	int n;
 	for (int i = 0; i < N; i++)
 	{
-		cin >> num;
-		input[i] = num;
-	}
-
-	vector<int> dp(N, 1);
-	for (int i = 0; i < N; i++)
+		cin >> n;
+		num[i] = n;
 		for (int j = 0; j < i; j++)
-			if (input[i] > input[j])
-				dp[i] = max(dp[i], dp[j] + 1);
+			if (num[i] > num[j])
+				dp[i] = max(dp[j] + 1, dp[i]);
+    }
 
 
 	cout << *max_element(dp.begin(), dp.end());
