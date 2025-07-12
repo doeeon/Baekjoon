@@ -1,46 +1,55 @@
 #include <iostream>
 #include <vector>
 #include <queue>
-
-#define INF 300000
+#include <algorithm>
 
 using namespace std;
 
-void Dijkstra(int X, int K, vector<vector<int>>& graph, vector<int>& dist, vector<int>& answer)
+void BFS(int X, int N, int K, vector<vector<int>>& graph, vector<int>& answer)
 {
-	priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
-	pq.push({ 0, X }); //cost, node
-	dist[X] = 0;
+	int level = 0;
+	vector<bool> visited(N + 1, false);
+	queue<int> q;
+	q.push(X);
+	visited[X] = true;
 
-	while (!pq.empty())
+	while (!q.empty())
 	{
-		int curr = pq.top().second;
-		int cost = pq.top().first;
-		pq.pop();
-
-		if (cost > dist[curr])
-			continue;
-
-		for (int i = 0; i < graph[curr].size(); i++)
+		int size = q.size();
+		if (level == K)
+			break;
+		for (int i = 0; i < size; i++)
 		{
-			int next = graph[curr][i];
-			if (dist[next] > dist[curr] + 1)
+			int curr = q.front();
+			q.pop();
+
+			for (int j = 0; j < graph[curr].size(); j++)
 			{
-				dist[next] = dist[curr] + 1;
-				pq.push({ dist[next], next });
+				int next = graph[curr][j];
+				if (!visited[next])
+				{
+					q.push(next);
+					visited[next] = true;
+				}
 			}
 		}
+
+		level++;
 	}
 
-	for (int i = 1; i < dist.size(); i++)
-		if (dist[i] == K)
-			answer.push_back(i);
-
+	while (!q.empty())
+	{
+		answer.push_back(q.front());
+		q.pop();
+	}
+	sort(answer.begin(), answer.end());
 	return;
 }
 
 int main()
 {
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
 	int N, M, K, X;
 	cin >> N >> M >> K >> X;
 	
@@ -53,9 +62,8 @@ int main()
 	}
 
 
-	vector<int> dist(N + 1, INF);
 	vector<int> answer;
-	Dijkstra(X, K, graph, dist, answer);
+	BFS(X, N, K, graph, answer);
 	if (answer.size() == 0)
 		cout << -1;
 	else
