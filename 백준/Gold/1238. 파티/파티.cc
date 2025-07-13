@@ -39,6 +39,8 @@ void Dijkstra(int start, int N, vector<vector<pair<int, int>>>& graph, vector<in
 
 int main()
 {
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
 	int N, M, X;
 	cin >> N >> M >> X;
 
