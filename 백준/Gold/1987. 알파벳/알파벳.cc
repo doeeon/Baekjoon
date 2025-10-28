@@ -12,42 +12,19 @@ int dy[4] = { 0, 0, 1, -1 };
 
 void DFS(int y, int x, int R, int C, vector<vector<char>>& map, vector<bool>& vis_alpha, int cnt, int& answer)
 {
-	bool check = false;
-	int ny;
-	int nx;
-
+	answer = max(answer, cnt);
 	for (int i = 0; i < 4; i++)
 	{
-		ny = y + dy[i];
-		nx = x + dx[i];
+		int ny = y + dy[i];
+		int nx = x + dx[i];
 
 		if (ny >= 0 && ny < R && nx >= 0 && nx < C && !vis_alpha[map[ny][nx] - 'A'])
 		{
-			check = true;
-			break;
-		}
-	}
-
-	if (!check)
-	{
-		answer = max(answer, cnt);
-		return;
-	}
-	else
-	{
-		for (int i = 0; i < 4; i++)
-		{
-			ny = y + dy[i];
-			nx = x + dx[i];
-
-			if (ny >= 0 && ny < R && nx >= 0 && nx < C && !vis_alpha[map[ny][nx] - 'A'])
-			{
-				cnt++;
-				vis_alpha[map[ny][nx] - 'A'] = true;
-				DFS(ny, nx, R, C, map, vis_alpha, cnt, answer);
-				cnt--;
-				vis_alpha[map[ny][nx] - 'A'] = false;
-			}
+			cnt++;
+			vis_alpha[map[ny][nx] - 'A'] = true;
+			DFS(ny, nx, R, C, map, vis_alpha, cnt, answer);
+			cnt--;
+			vis_alpha[map[ny][nx] - 'A'] = false;
 		}
 	}
 
