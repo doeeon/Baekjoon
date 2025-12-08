@@ -4,6 +4,23 @@
 
 using namespace std;
 
+int BinarySearch(int num, vector<int>& v)
+{
+	int left = 0;
+	int right = v.size() - 1;
+	while (left < right)
+	{
+		int mid = (left + right) / 2;
+
+		if (num <= v[mid])
+			right = mid;
+		else
+			left = mid + 1;
+	}
+
+	return left;
+}
+
 int main()
 {
 	ios::sync_with_stdio(false);
@@ -26,7 +43,7 @@ int main()
 			if (arr[i] > LIS.back())
 				LIS.push_back(arr[i]);
 			else
-				*lower_bound(LIS.begin(), LIS.end(), arr[i]) = arr[i];
+				LIS[BinarySearch(arr[i], LIS)] = arr[i];
 		}
 	}
 
