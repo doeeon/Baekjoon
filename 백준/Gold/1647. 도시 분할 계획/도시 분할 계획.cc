@@ -5,9 +5,16 @@
 
 using namespace std;
 
-bool cmp(vector<int>& a, vector<int>& b)
+struct Edge
 {
-	return a[2] < b[2];
+	int u;
+	int v;
+	int w;
+};
+
+bool cmp(Edge& a, Edge& b)
+{
+	return a.w < b.w;
 }
 
 int Find(int x, vector<int>& parent)
@@ -39,9 +46,9 @@ int main()
 	int N, M;
 	cin >> N >> M;
 
-	vector<vector<int>> edges(M + 1, { 0, 0, 0 }); // {u, v, w}
+	vector<Edge> edges(M + 1); // {u, v, w}
 	for (int i = 0; i < M; i++)
-		cin >> edges[i][0] >> edges[i][1] >> edges[i][2];
+		cin >> edges[i].u >> edges[i].v >> edges[i].w;
 	
 	sort(edges.begin(), edges.end(), cmp);
 
@@ -52,16 +59,16 @@ int main()
 
 	int cnt = 0;
 	int answer = 0;
-	for (vector<int> e : edges)
+	for (auto& e : edges)
 	{
-		if (Unite(e[0], e[1], parent, sz))
-		{
-			answer += e[2];
-			cnt++;
-		}
-
 		if (cnt == N - 2)
 			break;
+
+		if (Unite(e.u, e.v, parent, sz))
+		{
+			answer += e.w;
+			cnt++;
+		}
 	}
 	
 	cout << answer;
