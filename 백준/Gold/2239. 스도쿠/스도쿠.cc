@@ -4,110 +4,75 @@
 
 using namespace std;
 
-bool CheckRow(int r, vector<string>& map)
+bool CheckRow(int r, int n, vector<string>& map)
 {
-	int cnt[10] = { 0 };
 	for (int i = 0; i < 9; i++)
-	{
-		if (map[r][i] == '0')
-			continue;
-		cnt[map[r][i] - '0']++;
-		if (cnt[map[r][i] - '0'] > 1)
+		if (map[r][i] - '0' == n)
 			return false;
-	}
 
 	return true;
 }
 
-bool CheckColumn(int c, vector<string>& map)
+bool CheckColumn(int c, int n, vector<string>& map)
 {
-	int cnt[10] = { 0 };
 	for (int i = 0; i < 9; i++)
-	{
-		if (map[i][c] == '0')
-			continue;
-
-		cnt[map[i][c] - '0']++;
-		if (cnt[map[i][c] - '0'] > 1)
+		if (map[i][c] - '0' == n)
 			return false;
-	}
+
 	return true;
 }
 
-bool CheckGrid(int r, int c, vector<string>& map)
+bool CheckGrid(int r, int c, int n, vector<string>& map)
 {
-	int cnt[10] = { 0 };
 	for (int i = (r / 3) * 3; i < (r / 3) * 3 + 3; i++)
-	{
 		for (int j = (c / 3) * 3; j < (c / 3) * 3 + 3; j++)
-		{
-			if (map[i][j] == '0')
-				continue;
-
-			cnt[map[i][j]-'0']++;
-			if (cnt[map[i][j]-'0'] > 1)
+			if (map[i][j] - '0' == n)
 				return false;
-		}
-	}
 
 	return true;
 }
 
 bool Check(int r, int c, int n, vector<string>& map)
 {
-	map[r][c] = n + '0';
-	bool result = CheckRow(r, map) && CheckColumn(c, map) && CheckGrid(r, c, map);
-	map[r][c] = '0';
-	return result;
+	return CheckRow(r, n, map) && CheckColumn(c, n, map) && CheckGrid(r, c, n, map);
 }
 
-pair<int, int> NextBlank(pair<int, int> rc, vector<string>& map)
+bool Backtracking(int idx, vector<pair<int, int>>& blank, vector<string>& map)
 {
-	for (int i = rc.first; i < 9; i++)
-	{
-		int j = 0;
-		if (i == rc.first)	j = rc.second;
-		for (; j < 9; j++)
-			if (map[i][j] == '0')
-				return { i, j };
-	}
-
-	return { -1, -1 };
-}
-
-bool finish = false;
-void Backtracking(pair<int, int> rc, vector<string>& map)
-{
-	if (rc.first == -1 && rc.second == -1)
+	if (idx == blank.size())
 	{
 		for (string s : map)
 			cout << s << '\n';
-		finish = true;
-		return;
+
+		return true;
 	}
 
 	for (int n = 1; n <= 9; n++)
 	{
-		if (finish)
-			return;
-
-		if (Check(rc.first, rc.second, n, map))
+		if (Check(blank[idx].first, blank[idx].second, n, map))
 		{
-			map[rc.first][rc.second] = n + '0';
-			Backtracking(NextBlank({ rc.first, rc.second + 1 }, map), map);
-			map[rc.first][rc.second] = '0';
+			map[blank[idx].first][blank[idx].second] = n + '0';
+			if (Backtracking(idx + 1, blank, map))	
+				return true;
+			map[blank[idx].first][blank[idx].second] = '0';
 		}
 	}
-}
 
+	return false;
+}
 
 int main()
 {
-	int blank = 0;
 	vector<string> map(9);
+	vector<pair<int, int>> blank;
 	for (int i = 0; i < 9; i++)
+	{
 		cin >> map[i];
+		for (int j = 0; j < 9; j++)
+			if (map[i][j] - '0' == 0)
+				blank.emplace_back(i, j);
+	}
 
-	Backtracking(NextBlank({ 0, 0 }, map), map);
+	Backtracking(0, blank, map);
 	return 0;
 }
