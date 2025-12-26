@@ -4,15 +4,14 @@
 
 using namespace std;
 
-int TopologicalSort(int N, vector<vector<int>>& edge)
+int TopologicalSort(int N, vector<int>& edge)
 {
 	int cnt = 0;
 	queue<int> q;
 	vector<int> indeg(N + 1, 0);
 	for (int i = 1; i <= N; i++)
-		for (int e : edge[i])
-			indeg[e]++;
-	
+		indeg[edge[i]]++;
+
 	for (int i = 1; i <= N; i++)
 		if (indeg[i] == 0)
 			q.push(i);
@@ -23,12 +22,9 @@ int TopologicalSort(int N, vector<vector<int>>& edge)
 		q.pop();
 		cnt++;
 
-		for (int e : edge[cur])
-		{
-			indeg[e]--;
-			if (indeg[e] == 0)
-				q.push(e);
-		}
+		indeg[edge[cur]]--;
+		if (indeg[edge[cur]] == 0)
+			q.push(edge[cur]);
 	}
 	return cnt;
 }
@@ -46,13 +42,10 @@ int main()
 		int N;
 		cin >> N;
 
-		vector<vector<int>> edge(N + 1);
+		vector<int> edge(N + 1);
 		int v;
 		for (int i = 1; i <= N; i++)
-		{
-			cin >> v;
-			edge[i].push_back(v);
-		}
+			cin >> edge[i];
 
 		cout << TopologicalSort(N, edge) << '\n';
 	}
