@@ -9,14 +9,6 @@ int Find(int x, vector<int>& parent)
 	return parent[x] = Find(parent[x], parent);
 }
 
-void Unite(int x, int y, vector<int>& parent)
-{
-	x = Find(x, parent);
-	y = Find(y, parent);
-
-	parent[x] = y;
-}
-
 int main()
 {
 	ios_base::sync_with_stdio(false);
@@ -41,7 +33,7 @@ int main()
 			break;
 
 		answer++;
-		Unite(gate, gate- 1, parent);
+		parent[gate] = Find(gate - 1, parent);
 	}
 
 	cout << answer;
