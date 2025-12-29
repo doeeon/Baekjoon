@@ -3,6 +3,8 @@
 #include <queue>
 #include <cmath>
 
+#define INF 10001
+
 using namespace std;
 
 void BFS_Indexing(int y, int x, int num, int N, vector<vector<int>>& map, vector<vector<bool>>& visited)
@@ -38,45 +40,27 @@ void BFS_Indexing(int y, int x, int num, int N, vector<vector<int>>& map, vector
 	return;
 }
 
-void Print(vector<vector<int>>& map)
-{
-	cout << endl;
-	for (auto a : map)
-	{
-		for (auto b : a)
-			cout << b << ' ';
-		cout << endl;
-	}
-}
 
-int BFS_Expansion(int idx, int N, vector<vector<int>>& map, vector<vector<bool>> visited)
+int BFS_Expansion(int N, vector<vector<int>>& map)
 {
 	int dx[4] = { 1, -1, 0, 0 };
 	int dy[4] = { 0, 0, 1, -1 };
+	vector<vector<int>> dist(N, vector<int>(N, -1));
 	queue<pair<int, int>> q;
-
-	int dist = 0;
+	int result = INF;
 
 	for (int i = 0; i < N; i++)
 		for (int j = 0; j < N; j++)
-			if (map[i][j] == idx)
-				for (int n = 0; n < 4; n++)
-				{
-					int ny = i + dy[n];
-					int nx = j + dx[n];
-
-					if (ny >= 0 && ny < N && nx >= 0 && nx < N && !map[ny][nx] && !visited[ny][nx])
-					{
-						q.push({ ny, nx });
-						visited[ny][nx] = true;
-					}
-				}
-	dist++;
+			if (map[i][j] != 0)
+			{
+				q.push({ i, j });
+				dist[i][j] = 0;
+			}
 
 	while (!q.empty())
 	{
 		int size = q.size();
-		for (int s = 0; s < size; s++)
+		for (int i = 0; i < size; i++)
 		{
 			int cy = q.front().first;
 			int cx = q.front().second;
@@ -87,25 +71,25 @@ int BFS_Expansion(int idx, int N, vector<vector<int>>& map, vector<vector<bool>>
 				int ny = cy + dy[n];
 				int nx = cx + dx[n];
 
-				if (ny >= 0 && ny < N && nx >= 0 && nx < N && !visited[ny][nx])
+				if (ny >= 0 && ny < N && nx >= 0 && nx < N)
 				{
-					if (map[ny][nx] == 0)
+					if (map[ny][nx] == 0 && dist[ny][nx] == -1)
 					{
 						q.push({ ny, nx });
-						visited[ny][nx] = true;
+						map[ny][nx] = map[cy][cx];
+						dist[ny][nx] = dist[cy][cx] + 1;
 					}
-					else if (map[ny][nx] != idx)
-					{
-						return dist;
-					}
+					else if (map[ny][nx] != map[cy][cx])
+						result = min(result, dist[cy][cx] + dist[ny][nx]);
 				}
 			}
 		}
 
-		dist++;
+		if (result != INF)
+			return result;
 	}
 
-	return dist;
+	return result;
 }
 
 int main()
@@ -121,6 +105,7 @@ int main()
 		for (int j = 0; j < N; j++)
 			cin >> map[i][j];
 
+
 	int island_cnt = 0;
 	vector<vector<bool>> visited(N, vector<bool>(N, false));
 	for (int i = 0; i < N; i++)
@@ -131,12 +116,7 @@ int main()
 				BFS_Indexing(i, j, island_cnt, N, map, visited);
 			}
 
-	visited.assign(N, vector<bool>(N, false));
-	int min_distance = 10001;
-	for (int i = 1; i <= island_cnt; i++)
-		min_distance = min(min_distance, BFS_Expansion(i, N, map, visited));
-
-	cout << min_distance;
+	cout << BFS_Expansion(N, map);
 
 	return 0;
 }
