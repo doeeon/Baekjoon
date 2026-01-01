@@ -35,15 +35,10 @@ int main()
 	for (int i = 0; i < N; i++)
 		cin >> map[i];
 
-	vector<vector<bool>> visited(N, vector<bool>(M, false));
 	vector<int> parent(N * M);
 	vector<int> sz(N * M, 1);
 	for (int i = 0; i < N * M; i++)
 		parent[i] = i;
-
-	int dy[4] = { -1, 1, 0, 0 };
-	int dx[4] = { 0, 0, -1, 1 }; //U, D, L, R
-	char dir[4] = { 'U', 'D', 'L', 'R' };
 
 	for (int y = 0; y < N; y++)
 		for (int x = 0; x < M; x++)
