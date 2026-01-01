@@ -1,72 +1,27 @@
 #include <iostream>
 #include <vector>
-#include <queue>
+#include <utility>
 #include <string>
 
 using namespace std;
 
-bool IsInside(int y, int x, int N, int M)
+int Find(int x, vector<int>& parent)
 {
-	return (y >= 0 && y < N && x >= 0 && x < M);
+	if (parent[x] == x) return x;
+	return parent[x] = Find(parent[x], parent);
 }
 
-void BFS(int y, int x, int cnt, vector<string>& map, vector<vector<int>>& idx, vector<vector<bool>>& visited)
+bool Unite(int x, int y, vector<int>& parent, vector<int>& sz)
 {
-	int N = map.size();
-	int M = map[0].size();
+	x = Find(x, parent);
+	y = Find(y, parent);
 
-	int dy[4] = { -1, 1, 0, 0 }; // U, D, L, R
-	int dx[4] = { 0, 0, -1, 1 }; // U, D, L, R
-	char rev[4] = { 'D', 'U', 'R', 'L' };
-
-	queue<pair<int, int>> q;
-
-	q.push({ y, x });
-	visited[y][x] = true;
-	idx[y][x] = cnt;
-
-	while (!q.empty())
-	{
-		int cy = q.front().first;
-		int cx = q.front().second;
-		idx[cy][cx] = cnt;
-		q.pop();
-
-		if (map[cy][cx] == 'U' && !visited[cy - 1][cx])
-		{
-			q.push({ cy - 1, cx });
-			visited[cy - 1][cx] = true;
-		}
-		else if (map[cy][cx] == 'D' && !visited[cy+1][cx])
-		{
-			q.push({ cy + 1, cx });
-			visited[cy + 1][cx] = true;
-		}
-		else if (map[cy][cx] == 'L' && !visited[cy][cx - 1])
-		{
-			q.push({ cy, cx - 1 });
-			visited[cy][cx - 1] = true;
-		}
-		else if (map[cy][cx] == 'R' && !visited[cy][cx + 1])
-		{
-			q.push({ cy, cx + 1 });
-			visited[cy][cx + 1] = true;
-		}
-
-		for (int i = 0; i < 4; i++)
-		{
-			int ny = cy + dy[i];
-			int nx = cx + dx[i];
-
-			if (IsInside(ny, nx, N, M) && map[ny][nx] == rev[i] && !visited[ny][nx])
-			{
-				q.push({ ny, nx });
-				visited[ny][nx] = true;
-			}
-		}	
-	}
+	if (x == y)	return false;
+	if (sz[x] < sz[y]) swap(x, y);
+	parent[y] = x;
+	sz[x] += sz[y];
+	return true;
 }
-
 
 int main()
 {
@@ -81,13 +36,34 @@ int main()
 		cin >> map[i];
 
 	vector<vector<bool>> visited(N, vector<bool>(M, false));
-	vector<vector<int>> idx(N, vector<int>(M, 0));
-	int cnt = 0;
-	for (int i = 0; i < N; i++)
-		for (int j = 0; j < M; j++)
-			if (!visited[i][j])	
-				BFS(i, j, ++cnt, map, idx, visited);
+	vector<int> parent(N * M);
+	vector<int> sz(N * M, 1);
+	for (int i = 0; i < N * M; i++)
+		parent[i] = i;
 
-	cout << cnt;
+	int dy[4] = { -1, 1, 0, 0 };
+	int dx[4] = { 0, 0, -1, 1 }; //U, D, L, R
+	char dir[4] = { 'U', 'D', 'L', 'R' };
+
+	for (int y = 0; y < N; y++)
+		for (int x = 0; x < M; x++)
+		{
+			int ny = y;
+			int nx = x;
+
+			if (map[y][x] == 'U') ny--;
+			else if (map[y][x] == 'D') ny++;
+			else if (map[y][x] == 'L') nx--;
+			else if (map[y][x] == 'R') nx++;
+
+			Unite((y * M + x), (ny * M + nx), parent, sz);
+		}
+
+	int answer = 0;
+	for (int i = 0; i < parent.size(); i++)
+		if (parent[i] == i)
+			answer++;
+
+	cout << answer;
 	return 0;
 }
