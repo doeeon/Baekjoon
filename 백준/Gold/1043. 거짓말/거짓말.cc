@@ -1,7 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <utility>
-#include <unordered_set>
 
 using namespace std;
 
@@ -45,7 +44,7 @@ int main() {
 	{
 		cin >> input;
 		truth.push_back(input);
-		Unite(0, input, parent, sz); // parent[input] == parent[0] 이면 진실을 아는 사람
+		Unite(0, input, parent, sz); 
 	}
 
 	int m;
@@ -64,17 +63,21 @@ int main() {
 		}
 	}
 
+
 	int answer = 0;
 	for (int i = 0; i < party.size(); i++)
 	{
 		bool can_lie = true;
 		for (int p : party[i])
+		{
+			if (!can_lie) break;
 			for (int tr : truth)
 				if (Find(p, parent) == Find(tr, parent))
 				{
 					can_lie = false;
 					break;
 				}
+		}
 
 		if (can_lie)
 			answer++;
