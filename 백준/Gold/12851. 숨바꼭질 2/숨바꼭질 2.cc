@@ -30,8 +30,8 @@ int Operation(int n, int op)
 
 pair<int, int> BFS(int N, int M)
 {
-	vector<int> visited(200001, 0);
-	vector<int> time(200001, -1);
+	vector<int> visited(100001, 0);
+	vector<int> time(100001, -1);
 	queue<int> q;
 
 	q.push(N);
@@ -52,7 +52,7 @@ pair<int, int> BFS(int N, int M)
 			for (int i = 0; i < 3; i++)
 			{
 				int next = Operation(cur, i);
-				if (next>=0 && next <= 200000)
+				if (next>=0 && next <= 100000)
 				{
 					if (time[next] == -1)
 					{
