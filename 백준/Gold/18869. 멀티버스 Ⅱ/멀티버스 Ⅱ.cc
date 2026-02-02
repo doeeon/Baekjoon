@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <unordered_map>
 #include <algorithm>
 
 using namespace std;
@@ -14,7 +13,6 @@ int main()
 	cin >> M >> N;
 
 	vector<vector<int>> num(M, vector<int>(N));
-	vector<unordered_map<int, int>> m(M); // 각 크기별 순위 기록
 	vector<vector<int>> compressed(M, vector<int>(N)); // 좌표 압축 version
 
 	for (int i = 0; i < M; i++)
@@ -24,15 +22,10 @@ int main()
 
 		vector<int> tmp(num[i]);
 		sort(tmp.begin(), tmp.end());
+		tmp.erase(unique(tmp.begin(), tmp.end()), tmp.end()); // 중복 제거
 
 		for (int j = 0; j < N; j++)
-		{
-			if (j == 0 || tmp[j] != tmp[j - 1])
-				m[i][tmp[j]] = m[i].size();
-		}
-
-		for (int j = 0; j < N; j++)
-			compressed[i][j] = m[i][num[i][j]];
+			compressed[i][j] = lower_bound(tmp.begin(), tmp.end(), num[i][j]) - tmp.begin();
 	}
 
 	int answer = 0;
