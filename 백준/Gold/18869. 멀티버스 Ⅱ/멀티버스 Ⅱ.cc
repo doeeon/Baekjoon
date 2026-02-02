@@ -22,7 +22,6 @@ int main()
 
 		vector<int> tmp(num[i]);
 		sort(tmp.begin(), tmp.end());
-		tmp.erase(unique(tmp.begin(), tmp.end()), tmp.end()); // 중복 제거
 
 		for (int j = 0; j < N; j++)
 			compressed[i][j] = lower_bound(tmp.begin(), tmp.end(), num[i][j]) - tmp.begin();
