@@ -1,19 +1,20 @@
 #include <iostream>
-#include <vector>
 #include <queue>
+#include <vector>
 #include <cmath>
 
 using namespace std;
-
-int Topological_Sort(int N, int E, vector<vector<int>>& graph, vector<int>& cost)
+void Topological_Sort(int N, vector<vector<int>>& graph, vector<int>& time, vector<int>& dp)
 {
-	vector<int> dp = cost;
+	queue<int> q;
 	vector<int> indeg(N + 1, 0);
 	for (int i = 1; i <= N; i++)
-		for (int n = 0; n < graph[i].size(); n++)
-			indeg[graph[i][n]]++;
-	
-	queue<int> q;
+	{
+		dp[i] = time[i];
+		for (int next : graph[i])
+			indeg[next]++;
+	}
+
 	for (int i = 1; i <= N; i++)
 		if (indeg[i] == 0)
 			q.push(i);
@@ -23,24 +24,19 @@ int Topological_Sort(int N, int E, vector<vector<int>>& graph, vector<int>& cost
 		int curr = q.front();
 		q.pop();
 
-		if (curr == E)
-			break;
-
-		for (int n = 0; n < graph[curr].size(); n++)
+		for (int next : graph[curr])
 		{
-			indeg[graph[curr][n]]--;
-			dp[graph[curr][n]] = max(dp[graph[curr][n]], dp[curr] + cost[graph[curr][n]]);
-			if (indeg[graph[curr][n]] == 0)
-				q.push(graph[curr][n]);
+			indeg[next]--;
+			dp[next] = max(dp[next], dp[curr] + time[next]);
+			if (indeg[next] == 0)
+				q.push(next);
 		}
 	}
-
-	return dp[E];
+	return;
 }
-
 int main()
 {
-	ios::sync_with_stdio(false);
+	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 
 	int T;
@@ -51,11 +47,11 @@ int main()
 		int N, K;
 		cin >> N >> K;
 
-		vector<int> cost(N + 1, 0);
-		vector<vector<int>> graph(N + 1);
+		vector<int> time(N + 1);
 		for (int i = 1; i <= N; i++)
-			cin >> cost[i];
+			cin >> time[i];
 
+		vector<vector<int>> graph(N + 1);
 		int x, y;
 		for (int i = 0; i < K; i++)
 		{
@@ -66,7 +62,10 @@ int main()
 		int W;
 		cin >> W;
 
-		cout << Topological_Sort(N, W, graph, cost) << '\n';
+		vector<int> dp(N + 1);
+		Topological_Sort(N, graph, time, dp);
+
+		cout << dp[W] << '\n';
 	}
 	return 0;
 }
