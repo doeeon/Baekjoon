@@ -1,14 +1,24 @@
 #include <iostream>
 #include <vector>
-#include <utility>
+#include <queue>
 #include <algorithm>
+#include <utility>
 
 using namespace std;
 
-bool cmp(vector<int>& a, vector<int>& b)
-{
-	return a[2] < b[2];
-}
+struct EDGE {
+	int u;
+	int v;
+	int w;
+
+	bool operator <(const EDGE& other) const {
+		if (w != other.w)
+			return w < other.w;
+		if (u != other.u)
+			return u < other.u;
+		return v < other.v;
+	}
+};
 
 int Find(int x, vector<int>& parent)
 {
@@ -22,50 +32,51 @@ bool Unite(int x, int y, vector<int>& parent, vector<int>& sz)
 	y = Find(y, parent);
 
 	if (x == y) return false;
-	
-	if (sz[x] < sz[y])
-		swap(x, y);
-	
+	if (sz[x] < sz[y]) swap(x, y);
 	parent[y] = x;
 	sz[x] += sz[y];
 	return true;
 }
 
-int main()
+int Kruskal(int V, int E, vector<EDGE>& edges)
 {
-	ios::sync_with_stdio(false);
-	cin.tie(NULL);
-
-	int V, E;
-	cin >> V >> E;
-
-	vector<vector<int>> edges(E, { 0, 0, 0 }); //{u, v, w}
-	
-	for (int i = 0; i < E; i++)
-		cin >> edges[i][0] >> edges[i][1] >> edges[i][2];
-	
 	vector<int> parent(V + 1);
 	vector<int> sz(V + 1, 1);
-	for (int v = 1; v <= V; v++)
-		parent[v] = v;
+	for (int i = 1; i <= V; i++)
+		parent[i] = i;
 
-	sort(edges.begin(), edges.end(), cmp);
-
-	int answer = 0;
 	int cnt = 0;
+	int sum = 0;
 	for (auto e : edges)
 	{
-		if (Unite(e[0], e[1], parent, sz))
+		if (Unite(e.u, e.v, parent, sz))
 		{
-			answer += e[2];
 			cnt++;
+			sum += e.w;
 		}
 
 		if (cnt == V - 1)
 			break;
 	}
 
-	cout << answer;
+	return sum;
+}
+
+int main()
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	int V, E;
+	cin >> V >> E;
+
+	vector<EDGE> edges(E);
+	for (int i = 0; i < E; i++)
+		cin >> edges[i].u >> edges[i].v >> edges[i].w;
+	
+	sort(edges.begin(), edges.end());
+
+	cout << Kruskal(V, E, edges);
 
 	return 0;
 }
