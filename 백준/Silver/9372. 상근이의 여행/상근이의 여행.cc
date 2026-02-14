@@ -35,9 +35,17 @@ int main()
 		int N, M;
 		cin >> N >> M;
 
+		int a, b;
+		for (int i = 0; i < M; i++)
+			cin >> a >> b;
+
+		cout << N - 1 << '\n'; //MST
+
+		/*
 		vector<pair<int, int>> edge(M);
 		for (int i = 0; i < M; i++)
 			cin >> edge[i].first >> edge[i].second;
+
 
 		vector<int> parent(N + 1);
 		vector<int> sz(N + 1, 1);
@@ -50,6 +58,7 @@ int main()
 				answer++;
 
 		cout << answer << '\n';
+		*/
 	}
 	return 0;
 }
